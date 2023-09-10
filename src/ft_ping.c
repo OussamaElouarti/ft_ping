@@ -1,5 +1,7 @@
 #include "../lib/ft_ping.h"
 
+int Loop =1;
+
 unsigned short checksum(void *b, int len)
 {    unsigned short *buf = b;
     unsigned int sum=0;
@@ -15,11 +17,20 @@ unsigned short checksum(void *b, int len)
     return result;
 }
 
+void    intHandler(int dummy)
+{
+    Loop = 0;
+    return ;
+}
+
+
 void    pingTarget(t_args *args)
 {
     int sockfd;
     struct sockaddr_in addr_con;
     size_t send;
+    int i;
+    int msg_count = 0;
     struct ping_pkt pckt;
     int addrlen = sizeof(addr_con);
     TargetError(args->target);
@@ -35,17 +46,19 @@ void    pingTarget(t_args *args)
         printf (" %s \n" ,  strerror(errno));
         exit(0);
     }
-    while(LOOP)
+    while(Loop)
     {
         bzero(&pckt, sizeof(pckt));
         pckt.hdr.type = ICMP_ECHO;
-        pckt.hdr.un..echo.id = getpid();
+        pckt.hdr.un.echo.id = getpid();
          for ( i = 0; i < sizeof(pckt.msg)-1; i++ )
             pckt.msg[i] = i+'0';
          
         pckt.msg[i] = 0;
         pckt.hdr.un.echo.sequence = msg_count++;
         pckt.hdr.checksum = checksum(&pckt, sizeof(pckt));
-        send = sendto(sockfd, &pckt, sizeof(pckt), 0)
+	send = sendto(sockfd, &pckt, sizeof(pckt), 0, (struct sockaddr*)&addr_con, addrlen);
+	if (send <= 0 && msg_count >1)
+		printf("failed to send\n");
     }
 }

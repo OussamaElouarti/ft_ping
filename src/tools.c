@@ -15,11 +15,6 @@ void    help()
     printf("Usage: ping [OPTION... ] HOST ...\nSend ICMP ECHO_REQUEST packets to network hosts.\n\nOptions:\n\n -?, --help                 give this help list\n     --usage                give a short usage message\n -v, --verbose              verbose output\n");
 }
 
-void    intHandler(int dummy)
-{
-    loop = 0;
-    return ;
-}
 
 void    ft_free(t_args *args)
 {

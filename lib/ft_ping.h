@@ -17,8 +17,8 @@
 #include <time.h>
 #include <errno.h>
 
+#define PING_PKT_S 64
 
-#define LOOP    1
 
 typedef struct s_args
 {
